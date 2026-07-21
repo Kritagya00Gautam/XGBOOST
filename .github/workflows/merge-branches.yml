@@ -1,0 +1,33 @@
+name: Merge Master into Main
+
+on:
+  workflow_dispatch:
+
+jobs:
+  merge:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Configure git
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Fetch all branches
+        run: git fetch origin
+
+      - name: Checkout main
+        run: git checkout main
+
+      - name: Merge master into main
+        run: git merge --allow-unrelated-histories origin/master -m "Merge master into main with unrelated histories"
+
+      - name: Push to main
+        run: git push origin main
+
+      - name: Delete master branch
+        run: git push origin --delete master
